@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>SmartMarket Mini - Produtos</title>
+    <style type="text/css">
+        .estoque-critico { color: red; font-weight: bold; background-color: #ffebee; }
+        .ui-dialog .ui-dialog-content { max-height: 70vh !important; overflow-y: auto !important; }
+    </style>
+</h:head>
+
+<h:body>
+    <ui:composition template="template.xhtml">
+        <ui:define name="content">
+
+            <h:form id="produtosForm">
+                <p:growl id="msgs" showDetail="true" life="3000" />
+
+                <p:panel header="Cadastro de Produtos">
+
+                    <p:toolbar>
+                        <p:toolbarGroup align="left">
+                            <p:commandButton value="Novo Produto" icon="pi pi-plus"
+                                             actionListener="#{produtoBean.novo}"
+                                             oncomplete="PF('produtoDialog').show()"
+                                             update=":formDialog:produtoPanel" />
+                        </p:toolbarGroup>
+
+                        <p:toolbarGroup align="right">
+							<p:selectOneMenu value="#{produtoBean.filtroAtivo}">
+							    <f:selectItem itemLabel="Apenas ativos"      itemValue="ATIVOS" />
+							    <f:selectItem itemLabel="Apenas desativados" itemValue="INATIVOS" />
+							    <f:selectItem itemLabel="Todos os produtos"  itemValue="TODOS" />
+							    <f:ajax listener="#{produtoBean.carregarProdutos}" render="produtosTable" />
+							</p:selectOneMenu>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+
+                    <p:separator style="margin:20px 0;" />
+
+                    <!-- TABELA -->
+                    <p:dataTable id="produtosTable"
+                                 value="#{produtoBean.produtos}"
+                                 var="p"
+                                 paginator="true"
+                                 rows="10"
+                                 emptyMessage="Nenhum produto encontrado."
+                                 style="margin-top:10px;">
+
+                        <p:column headerText="ID" width="60"><h:outputText value="#{p.id}" /></p:column>
+                        <p:column headerText="Código" filterBy="#{p.codigo}" filterMatchMode="contains">
+                            <h:outputText value="#{p.codigo}" />
+                        </p:column>
+                        <p:column headerText="Nome" filterBy="#{p.nome}" filterMatchMode="contains">
+                            <h:outputText value="#{p.nome}" />
+                        </p:column>
+                        <p:column headerText="Preço" width="110">
+                            <h:outputText value="#{p.preco}">
+                                <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Estoque" width="100"
+                                  styleClass="#{p.estoqueCritico ? 'estoque-critico' : ''}">
+                            <h:outputText value="#{p.estoque}" />
+                        </p:column>
+                        <p:column headerText="Mínimo" width="90"><h:outputText value="#{p.estoqueMinimo}" /></p:column>
+                        <p:column headerText="Fornecedor">
+                            <h:outputText value="#{p.fornecedor != null ? p.fornecedor.nome : 'Sem fornecedor'}" />
+                        </p:column>
+
+                        <p:column headerText="Ações" width="120">
+                            <p:commandButton icon="pi pi-pencil" title="Editar"
+                                             action="#{produtoBean.prepararEdicao(p)}"
+                                             oncomplete="PF('produtoDialog').show()"
+                                             update=":formDialog:produtoPanel" />
+
+                            <p:commandButton icon="pi pi-ban" title="Desativar produto"
+                                             action="#{produtoBean.prepararExclusao(p)}"
+                                             oncomplete="PF('confirmDialog').show()"
+                                             styleClass="ui-button-warning" />
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <!-- DIÁLOGO DE CADASTRO/EDIÇÃO -->
+			<h:form id="formDialog">
+			    <p:dialog header="#{produtoBean.produto.id == null ? 'Novo Produto' : 'Editar Produto'}"
+			              widgetVar="produtoDialog" modal="true" resizable="false"
+			              closeOnEscape="true" width="700" height="auto">
+			
+			        <p:messages id="msgsDialog" showDetail="true" closable="true" autoUpdate="true" />
+			
+			        <h:panelGrid columns="2" id="produtoPanel" cellpadding="12" style="width:100%;">
+			
+			            <p:outputLabel for="codigo" value="Código de Barras:" />
+			            <p:inputText id="codigo" value="#{produtoBean.produto.codigo}"
+			                         required="true" requiredMessage="Código é obrigatório"
+			                         placeholder="7891234567890"
+			                         style="font-family: 'Courier New', monospace; font-size: 1.2em;" />
+			
+			            <p:outputLabel for="nome" value="Nome do Produto:" />
+			            <p:inputText id="nome" value="#{produtoBean.produto.nome}"
+			                         required="true" requiredMessage="Nome é obrigatório"
+			                         placeholder="Ex: Arroz 5kg Tio João" style="width:100%;" />
+			
+			            <p:outputLabel for="preco" value="Preço de Venda (R$):" />
+			            <p:inputNumber id="preco" value="#{produtoBean.produto.preco}"
+			                           required="true" symbol="R$" decimalPlaces="2" minValue="0.01"
+			                           style="width:100%;" />
+			
+			            <p:outputLabel for="estoque" value="Estoque Atual:" />
+			            <p:inputNumber id="estoque" value="#{produtoBean.produto.estoque}"
+			                           required="true" decimalPlaces="0" minValue="0"
+			                           style="width:100%;" />
+			
+			            <p:outputLabel for="estoqueMinimo" value="Estoque Mínimo:" />
+			            <p:inputNumber id="estoqueMinimo" value="#{produtoBean.produto.estoqueMinimo}"
+			                           required="true" decimalPlaces="0" minValue="0"
+			                           style="width:100%;" />
+			
+			            <p:outputLabel for="fornecedor" value="Fornecedor:" />
+			            <p:selectOneMenu id="fornecedor" value="#{produtoBean.produto.fornecedorId}">
+			                <f:selectItem itemLabel="Selecione..." itemValue="#{null}" />
+			                <f:selectItems value="#{produtoBean.fornecedores}"
+			                               var="f" itemLabel="#{f.nome}" itemValue="#{f.id}" />
+			            </p:selectOneMenu>
+			
+			        </h:panelGrid>
+			
+			        <f:facet name="footer">
+			            <p:commandButton value="Salvar Produto"
+			                             action="#{produtoBean.salvar}"
+			                             update=":produtosForm :formDialog:msgsDialog"
+			                             oncomplete="if(!args.validationFailed) PF('produtoDialog').hide()"
+			                             icon="pi pi-save" styleClass="ui-button-success" />
+			
+			            <p:commandButton value="Cancelar" type="button"
+			                             onclick="PF('produtoDialog').hide()"
+			                             icon="pi pi-times" styleClass="ui-button-secondary" />
+			        </f:facet>
+			    </p:dialog>
+			</h:form>
+
+            <!-- CONFIRM DIALOG DE DESATIVAÇÃO -->
+            <h:form id="formConfirm">
+                <p:confirmDialog widgetVar="confirmDialog" header="Desativar Produto"
+                                 severity="warn" closable="false">
+                    <p:outputPanel style="text-align:center; font-size:1.1em; margin-bottom:20px;">
+                        <i class="pi pi-exclamation-triangle" style="font-size:2.5em; color:#ff9800;"></i><br/>
+                        <strong>#{produtoBean.produto.nome}</strong><br/><br/>
+                        Tem certeza que deseja <strong>DESATIVAR</strong> este produto?<br/>
+                        Ele <strong>não aparecerá mais no PDV</strong>.
+                    </p:outputPanel>
+
+                    <p:commandButton value="Sim, Desativar" icon="pi pi-ban"
+                                     action="#{produtoBean.excluir}"
+                                     update=":produtosForm"
+                                     oncomplete="PF('confirmDialog').hide()"
+                                     styleClass="ui-button-warning" />
+
+                    <p:commandButton value="Cancelar" type="button"
+                                     onclick="PF('confirmDialog').hide()"
+                                     styleClass="ui-button-secondary" />
+                </p:confirmDialog>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</h:body>
+</html>

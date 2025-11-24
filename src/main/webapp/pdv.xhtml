@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+ 
+<h:head>
+    <title>SmartMarket Mini - PDV</title>
+    <style type="text/css">
+        .total-panel {
+            font-size: 3.2em !important;
+            font-weight: bold;
+            text-align: center;
+            color: #007ad9;
+            padding: 20px 0;
+            background: #f8fbff;
+            border: 3px solid #007ad9;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        .pdv-col {
+            padding: 10px;
+        }
+        .ui-panelgrid.pdv-grid > .ui-panelgrid-content {
+            padding: 0 !important;
+        }
+    </style>
+</h:head>
+ 
+<h:body>
+    <ui:composition template="template.xhtml">
+        <ui:define name="content">
+            <h:form id="pdvForm">
+                <p:growl id="msgs" showDetail="true" life="3000" />
+ 
+                <p:panel header="Ponto de Venda (PDV)" style="margin-bottom: 20px;">
+                    <!-- GRID PRINCIPAL 3 COLUNAS -->
+                    <p:panelGrid columns="3" columnClasses="pdv-col,pdv-col,pdv-col"
+                                 styleClass="pdv-grid" layout="grid" style="width:100%;">
+ 
+                        <!-- COLUNA 1 - ENTRADA DE PRODUTO -->
+                        <p:panel header="Adicionar Produto (Leitor)">
+                            <h:panelGrid columns="1" cellpadding="8" style="width:100%;">
+                                <p:outputLabel for="codigo" value="Código de barras:" />
+                                <p:inputText id="codigo" value="#{pdvBean.codigoProduto}"
+                                             placeholder="Digite ou escaneie o código"
+                                             style="width:100%; font-size:1.3em;">
+                                    <f:ajax event="keydown" 
+								            listener="#{pdvBean.adicionarProduto}" 
+								            render=":pdvForm:msgs :pdvForm:carrinho :pdvForm:totalPanel"
+								            oncomplete="this.value=''; this.focus();" />
+                                </p:inputText>
+ 
+                                <p:commandButton value="Adicionar Produto"
+                                                 action="#{pdvBean.adicionarProduto}"
+                                                 icon="pi pi-plus-circle"
+                                                 style="width:100%; height:45px; font-size:1.1em;"
+                                                 update=":pdvForm:msgs :pdvForm:carrinho :pdvForm:totalPanel"/>
+                            </h:panelGrid>
+                        </p:panel>
+ 
+                        <!-- COLUNA 2 - CARRINHO -->
+                        <p:panel header="Itens da Venda">
+                            <p:dataTable id="carrinho" value="#{pdvBean.vendaAtual.itens}" var="item"
+                                         emptyMessage="Carrinho vazio" scrollable="true" scrollHeight="450"
+                                         style="font-size:1.05em;">
+                                <p:column headerText="Produto">
+                                    <h:outputText value="#{item.produto.nome}" />
+                                </p:column>
+                                <p:column headerText="Qtd" width="70" style="text-align:center;">
+                                    <h:outputText value="#{item.quantidade}" />
+                                </p:column>
+                                <p:column headerText="Unitário" width="100">
+                                    <h:outputText value="#{item.precoUnitario}">
+                                        <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Subtotal" width="100">
+                                    <h:outputText value="#{item.subtotal}">
+                                        <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column width="50">
+                                    <p:commandButton icon="pi pi-trash" title="Remover"
+									                 action="#{pdvBean.removerItem(item)}"
+									                 update="@form"
+									                 process="@this" 
+									                 styleClass="ui-button-danger"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+ 
+                        <!-- COLUNA 3 - FINALIZAÇÃO -->
+                        <p:panel header="Total e Pagamento">
+                            <h:panelGrid columns="1" style="width:100%;">
+ 
+                                <p:outputLabel value="TOTAL DA VENDA" style="font-size:1.4em; text-align:center; font-weight:bold; color:#333;"/>
+                                <p:outputPanel id="totalPanel" layout="block" styleClass="total-panel">
+                                    <h:outputText value="#{pdvBean.vendaAtual.total}">
+                                        <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"/>
+                                    </h:outputText>
+                                </p:outputPanel>
+ 
+                                <p:outputLabel value="Forma de Pagamento:" style="margin-top:10px;"/>
+                                <p:selectOneMenu id="formaPagamento" value="#{pdvBean.formaPagamentoSelecionada}"
+                                                 style="width:100%;">
+                                    <f:selectItems value="#{pdvBean.formasPagamento}" var="fp"
+                                                   itemLabel="#{fp}" itemValue="#{fp}" />
+                                    <p:ajax update="valorPagoPanel"/>
+                                </p:selectOneMenu>
+ 
+                                <p:outputPanel id="valorPagoPanel" style="margin-top:10px;">
+                                    <h:panelGroup rendered="#{pdvBean.formaPagamentoSelecionada == 'DINHEIRO'}">
+                                        <p:outputLabel for="valorPago" value="Valor recebido:" />
+                                        <p:inputNumber id="valorPago" value="#{pdvBean.valorPago}"
+                                                       symbol="R$" decimalPlaces="2" style="width:100%; font-size:1.3em;"/>
+                                    </h:panelGroup>
+                                </p:outputPanel>
+ 
+                                <p:commandButton value="FINALIZAR VENDA"
+                                                 action="#{pdvBean.finalizarVenda}"
+                                                 icon="pi pi-check-circle"
+                                                 styleClass="ui-button-success"
+                                                 style="width:100%; height:60px; font-size:1.6em; margin-top:20px;"
+                                                 update=":pdvForm"/>
+ 
+                                <p:commandButton id="cupomButton" value="IMPRIMIR CUPOM"
+                                                 icon="pi pi-print"
+                                                 action="#{pdvBean.gerarCupomFiscal}"
+                                                 ajax="false"
+                                                 rendered="#{pdvBean.ultimaVenda != null}"
+                                                 style="width:100%; height:50px; margin-top:10px; font-size:1.2em;"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:panelGrid>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</h:body>
+</html>

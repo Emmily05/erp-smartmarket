@@ -1,0 +1,17 @@
+package com.smartmarket.util;
+
+import org.mindrot.jbcrypt.BCrypt;
+
+public class BCryptUtil {
+
+    public static String hashPassword(String plainPassword) {
+        return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
+    }
+
+    public static boolean checkPassword(String plainPassword, String hashedPassword) {
+        if (hashedPassword == null || !hashedPassword.startsWith("$2a$")) {
+            return false; 
+        }
+        return BCrypt.checkpw(plainPassword, hashedPassword);
+    }
+}

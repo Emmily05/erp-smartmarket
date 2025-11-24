@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>SmartMarket Mini - ERP</title>
+    </f:facet>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    
+    <!-- PrimeFaces CSS -->
+    <h:outputStylesheet library="primefaces" name="primeicons/primeicons.css" />
+    
+    <!-- Custom CSS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        #layout-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 0;
+        }
+
+        .navbar-custom .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white !important;
+            margin-right: 2rem;
+        }
+
+        .navbar-custom .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            margin: 0 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: white !important;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .navbar-custom .nav-link.active {
+            color: white !important;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .user-info {
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info .badge {
+            background-color: rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        #layout-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 1rem;
+        }
+
+        .page-header h1 {
+            color: #333;
+            font-weight: 600;
+            font-size: 2rem;
+        }
+
+        .page-header p {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Estilo para cards */
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px 8px 0 0 !important;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+        }
+
+        /* Estilo para tabelas */
+        .table-responsive {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa;
+            color: #333;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            padding: 0.75rem 1rem;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Estilo para botões */
+        .btn {
+            border-radius: 6px;
+            font-weight: 500;
+            padding: 0.5rem 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background-color: #10b981;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        /* Estilo para formulários */
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            padding: 0.6rem 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Estilo para alerts */
+        .alert {
+            border-radius: 6px;
+            border: none;
+        }
+
+        .alert-info {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .alert-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .alert-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .alert-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            #layout-content {
+                padding: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .navbar-custom .navbar-brand {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Estilo para o PrimeFaces */
+        .ui-menubar {
+            background: none !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+
+        .ui-menubar .ui-menu-list {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        }
+
+        .ui-menubar .ui-menuitem > a {
+            color: rgba(255, 255, 255, 0.9) !important;
+            padding: 1rem 1.2rem !important;
+        }
+
+        .ui-menubar .ui-menuitem > a:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+        }
+
+        .ui-submenu-list {
+            background-color: white !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .ui-submenu-list .ui-menuitem > a {
+            color: #333 !important;
+        }
+
+        .ui-submenu-list .ui-menuitem > a:hover {
+            background-color: #f0f0f0 !important;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <div id="layout-wrapper">
+        <nav class="navbar navbar-expand-lg navbar-custom">
+            <div class="container-fluid">
+                <h:link outcome="dashboard" styleClass="navbar-brand">
+                    <i class="pi pi-shopping-bag" style="margin-right: 0.5rem;"></i>
+                    SmartMarket Mini
+                </h:link>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <!-- Dashboard -->
+                        <li class="nav-item">
+                            <h:link outcome="dashboard" styleClass="nav-link">
+                                <i class="pi pi-home" style="margin-right: 0.3rem;"></i> Dashboard
+                            </h:link>
+                        </li>
+
+                        <!-- Cadastros -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="pi pi-pencil" style="margin-right: 0.3rem;"></i> Cadastros
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><h:link outcome="produtos" styleClass="dropdown-item">Produtos</h:link></li>
+                                <li><h:link outcome="fornecedores" styleClass="dropdown-item">Fornecedores</h:link></li>
+                            </ul>
+                        </li>
+
+                        <!-- PDV -->
+                        <li class="nav-item">
+                            <h:link outcome="pdv" styleClass="nav-link">
+                                <i class="pi pi-shopping-cart" style="margin-right: 0.3rem;"></i> PDV (Caixa)
+                            </h:link>
+                        </li>
+
+						<!-- Relatórios -->
+						<li class="nav-item dropdown">
+						    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+						        Relatórios
+						    </a>
+						    <ul class="dropdown-menu">
+						        <!-- LOGS DO SISTEMA -->
+						        <li><h:link outcome="logs" styleClass="dropdown-item">Logs do Sistema</h:link></li>
+						        
+						        <!-- RELATÓRIO DE VENDAS (NOVO) -->
+						        <li>
+						            <h:link outcome="relatorioVendas" styleClass="dropdown-item">
+						                <i class="pi pi-chart-line" style="margin-right: 0.5rem;"></i>
+						                Relatório de Vendas
+						            </h:link>
+						        </li>
+
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <!-- Usuário + Sair -->
+                    <div class="user-info">
+                        <span>
+                            <i class="pi pi-user" style="margin-right: 0.3rem;"></i>
+                            #{loginBean.usuarioLogado.nome}
+                        </span>
+                        <span class="badge">#{loginBean.usuarioLogado.perfil}</span>
+                        <h:form style="display: inline;">
+                            <h:commandLink action="#{loginBean.logout}" styleClass="btn btn-sm btn-outline-light">
+                                <i class="pi pi-sign-out" style="margin-right: 0.3rem;"></i> Sair
+                            </h:commandLink>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Conteúdo das páginas -->
+        <div id="layout-content">
+            <ui:insert name="content" />
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</h:body>
+</html>

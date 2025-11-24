@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>SmartMarket Mini - Dashboard</title>
+</h:head>
+
+<h:body>
+    <ui:composition template="template.xhtml">
+        <ui:define name="content">
+            <h:form>
+                <p:growl id="msgs" showDetail="true" life="8000" />
+
+                <p:panel header="Dashboard - #{loginBean.usuarioLogado.perfil}">
+                    <h:outputText value="Bem-vindo(a), #{loginBean.usuarioLogado.nome}!" style="font-size: 1.2em;"/>
+                    
+                    <p:separator style="margin: 20px 0;"/>
+
+                    <!-- Aviso de Estoque Baixo (Tabela) -->
+                    <p:panel header="Alerta de Estoque Baixo" style="margin-top: 20px;">
+                        <p:dataTable value="#{dashboardBean.produtosEstoqueBaixo}" var="p" 
+                                     styleClass="ui-datatable-striped" emptyMessage="Nenhum produto com estoque baixo"
+                                     rendered="#{dashboardBean.temEstoqueCritico}">
+                            
+                            <p:column headerText="Código"><h:outputText value="#{p.codigo}"/></p:column>
+                            <p:column headerText="Produto"><h:outputText value="#{p.nome}"/></p:column>
+                            <p:column headerText="Estoque Atual" style="color:red; font-weight:bold;">
+                                <h:outputText value="#{p.estoque} unid."/>
+                            </p:column>
+                            <p:column headerText="Mínimo"><h:outputText value="#{p.estoqueMinimo}"/></p:column>
+                        </p:dataTable>
+                        
+                        <h:outputText value="Parabéns! Nenhum produto com estoque crítico." 
+                                      rendered="#{!dashboardBean.temEstoqueCritico}" style="color: green;"/>
+                    </p:panel>
+
+                    <!-- Popup automático se tiver estoque crítico -->
+                    <p:dialog header="ALERTA DE ESTOQUE!" widgetVar="alertaEstoque" modal="true" 
+                              visible="#{dashboardBean.temEstoqueCritico}">
+                        <p>Existem **#{dashboardBean.quantidadeCriticos}** produtos com estoque CRÍTICO (abaixo do mínimo)!</p>
+                        <p:commandButton value="Ver lista" onclick="PF('alertaEstoque').hide();" type="button"/>
+                    </p:dialog>
+
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</h:body>
+</html>

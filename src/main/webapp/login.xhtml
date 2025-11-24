@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>SmartMarket Mini - Login</title>
+    <style type="text/css">
+        body {
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .login-panel {
+            width: 380px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            background-color: white;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .login-header h2 {
+            color: #667eea;
+            font-weight: 600;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <p:growl id="msgs" showDetail="true" life="4000" globalOnly="true" />
+
+    <h:form id="loginForm">
+        <p:panel header="SmartMarket Mini - Acesso ao Sistema" styleClass="login-panel">
+            <div class="login-header">
+                <h2>Bem-vindo</h2>
+                <p style="color:#888; font-size:0.95em;">Faça login para continuar</p>
+            </div>
+
+            <h:panelGrid columns="1" cellpadding="8" style="width:100%;">
+                <p:outputLabel for="email" value="E-mail:" />
+                <p:inputText id="email" value="#{loginBean.email}" required="true"
+                             placeholder="seu@email.com" style="width:100%;" />
+
+                <p:outputLabel for="senha" value="Senha:" />
+                <p:password id="senha" value="#{loginBean.senha}" required="true"
+                            placeholder="••••••••" feedback="false" style="width:100%;" />
+
+                <!-- BOTÃO ENTRAR  -->
+                <p:commandButton value="Entrar"
+                                 actionListener="#{loginBean.login}"
+                                 update=":msgs"
+                                 style="width:100%; margin-top: 15px; height: 45px; font-size: 1.1em;"
+                                 icon="pi pi-sign-in"
+                                 styleClass="ui-button-success" />
+
+                <p:commandLink value="Esqueci minha senha"
+                               onclick="PF('recuperarSenhaDialog').show()"
+                               style="display: block; text-align: center; margin-top: 15px; color: #667eea;" />
+            </h:panelGrid>
+
+            <f:facet name="footer">
+                <p style="text-align: center; font-size: 0.85em; color: #888; margin-top: 20px;">
+                    <strong>Dica:</strong> admin@smart.com / 123
+                </p>
+            </f:facet>
+        </p:panel>
+    </h:form>
+
+    <!-- Diálogo Recuperar Senha -->
+    <h:form id="formRecuperarSenha">
+        <p:dialog header="Recuperar Senha" widgetVar="recuperarSenhaDialog"
+                  modal="true" resizable="false" closeOnEscape="true" width="400">
+
+            <p:messages id="msgsRecuperar" showDetail="true" closable="true" />
+
+            <h:panelGrid columns="2" cellpadding="10">
+                <p:outputLabel value="E-mail cadastrado:" for="emailRecuperacao" />
+                <p:inputText id="emailRecuperacao" value="#{loginBean.emailRecuperacao}"
+                             required="true" placeholder="seu@email.com" />
+            </h:panelGrid>
+
+            <f:facet name="footer">
+                <p:commandButton value="Enviar Link de Recuperação"
+                 actionListener="#{loginBean.recuperarSenha}"
+                 update=":msgs"                             
+                 oncomplete="if(!args.validationFailed) PF('recuperarSenhaDialog').hide()"
+                 icon="pi pi-envelope"
+                 styleClass="ui-button-success" />
+                 
+                <p:commandButton value="Cancelar" type="button"
+                                 onclick="PF('recuperarSenhaDialog').hide()"
+                                 icon="pi pi-times"
+                                 styleClass="ui-button-secondary" />
+            </f:facet>
+        </p:dialog>
+    </h:form>
+</h:body>
+</html>

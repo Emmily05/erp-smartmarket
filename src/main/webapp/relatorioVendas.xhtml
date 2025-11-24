@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>SmartMarket - Relatório de Vendas</title>
+    <style>
+        .card-metrica { font-size: 1.8em; font-weight: bold; text-align: center; padding: 20px; border-radius: 12px; color: white; }
+        .hoje { background: #28a745; }
+        .periodo { background: #007ad9; }
+        .ticket { background: #ff9800; }
+    </style>
+</h:head>
+
+<h:body>
+    <ui:composition template="template.xhtml">
+        <ui:define name="content">
+            <h:form id="formRelatorio">
+                <p:growl id="msgs"/>
+
+                <p:panel header="Relatório de Vendas" style="margin-bottom:20px;">
+                    <!-- FILTROS -->
+                    <p:toolbar>
+                        <p:toolbarGroup align="left">
+                            <p:selectOneMenu value="#{relatorioBean.filtroRapido}">
+                                <f:selectItem itemLabel="Hoje" itemValue="HOJE"/>
+                                <f:selectItem itemLabel="Ontem" itemValue="ONTEM"/>
+                                <f:selectItem itemLabel="Últimos 7 dias" itemValue="SETEDIAS"/>
+                                <f:selectItem itemLabel="Este mês" itemValue="MES"/>
+                                <f:selectItem itemLabel="Personalizado" itemValue="PERSONALIZADO"/>
+                                <f:ajax listener="#{relatorioBean.aplicarFiltroRapido}" render="painelResultado"/>
+                            </p:selectOneMenu>
+
+                            <h:panelGroup rendered="#{relatorioBean.filtroRapido == 'PERSONALIZADO'}">
+                                <p:calendar value="#{relatorioBean.dataInicio}" showOn="button" pattern="dd/MM/yyyy" style="margin-left:10px;"/>
+                                <p:calendar value="#{relatorioBean.dataFim}" showOn="button" pattern="dd/MM/yyyy" style="margin-left:5px;"/>
+                                <p:commandButton value="Filtrar" action="#{relatorioBean.filtrar}" update="painelResultado" style="margin-left:5px;"/>
+                            </h:panelGroup>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+
+                    <!-- MÉTRICAS PRINCIPAIS -->
+                    <div id="painelResultado">
+                        <p:panelGrid columns="4" style="width:100%; margin-top:20px;" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-3,ui-g-12 ui-md-3,ui-g-12 ui-md-3">
+                            <p:panel header="Vendas Hoje" styleClass="card-metrica hoje">
+                                R$ #{relatorioBean.totalHoje}
+                            </p:panel>
+                            <p:panel header="Vendas no Período" styleClass="card-metrica periodo">
+                                R$ #{relatorioBean.totalPeriodo}
+                            </p:panel>
+                            <p:panel header="Ticket Médio" styleClass="card-metrica ticket">
+                                R$ #{relatorioBean.ticketMedio}
+                            </p:panel>
+                            <p:panel header="Total de Vendas" styleClass="card-metrica" style="background:#9c27b0;">
+                                #{relatorioBean.totalVendas} vendas
+                            </p:panel>
+                        </p:panelGrid>
+
+                        <!-- GRÁFICO SIMPLES -->
+                        <p:panel header="Vendas por Dia" style="margin-top:30px;">
+						    <p:dataTable value="#{relatorioBean.vendasDiarias}" var="v" 
+						                 emptyMessage="Nenhuma venda no período selecionado">
+						        <p:column headerText="Data">
+						            <h:outputText value="#{v.dia}">
+						                <f:convertDateTime pattern="dd/MM/yyyy" />
+						            </h:outputText>
+						        </p:column>
+						        <p:column headerText="Nº de Vendas" style="text-align:center; font-weight:bold; color:#007ad9;">
+						            #{v.vendas}
+						        </p:column>
+						        <p:column headerText="Total Vendido" style="text-align:right; font-weight:bold; color:#28a745;">
+						            <h:outputText value="#{v.total}">
+						                <f:convertNumber type="currency" currencySymbol="R$" locale="pt_BR"/>
+						            </h:outputText>
+						        </p:column>
+						    </p:dataTable>
+						</p:panel>
+
+                        <!-- TOP PRODUTOS -->
+                        <p:panel header="Produtos Mais Vendidos" style="margin-top:20px;">
+                            <p:dataTable value="#{relatorioBean.topProdutos}" var="p" emptyMessage="Nenhum produto vendido.">
+                                <p:column headerText="Produto"><h:outputText value="#{p.nome}"/></p:column>
+                                <p:column headerText="Qtd Vendida" style="text-align:center;"><h:outputText value="#{p.quantidade}"/></p:column>
+                                <p:column headerText="Total Vendido">
+                                    <h:outputText value="#{p.total}">
+                                        <f:convertNumber type="currency" currencySymbol="R$"/>
+                                    </h:outputText>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+
+                        <!-- VENDAS POR FUNCIONÁRIO -->
+                        <p:panel header="Vendas por Funcionário" style="margin-top:20px;">
+                            <p:dataTable value="#{relatorioBean.vendasPorUsuario}" var="v">
+                                <p:column headerText="Funcionário"><h:outputText value="#{v.usuarioNome}"/></p:column>
+                                <p:column headerText="Vendas"><h:outputText value="#{v.quantidade}"/></p:column>
+                                <p:column headerText="Total">
+                                    <h:outputText value="#{v.total}">
+                                        <f:convertNumber type="currency" currencySymbol="R$"/>
+                                    </h:outputText>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+                    </div>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</h:body>
+</html>
