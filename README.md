@@ -99,7 +99,7 @@ Para executar o projeto localmente, você precisará ter instalado:
 
 Este projeto é uma **versão MVP (Minimum Viable Product)** do SmartMarket, ou seja, é funcional, mas ainda não possui todas as funcionalidades de cadastro de usuários.  
 
-Para testar o sistema, existem **3 usuários de exemplo** já configurados:
+Para testar o sistema, você pode criar 3 usuários: 
 
 | Usuário       | E-mail           | Senha |
 |---------------|-----------------|-------|
