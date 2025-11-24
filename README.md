@@ -1,90 +1,117 @@
-# SmartMarket Mini - Projeto Web Completo (JSF/PrimeFaces + JDBC/MySQL)
+# SmartMarket - Sistema de Gestão de Varejo
 
-Este é o projeto **SmartMarket Mini** completo, implementado como uma aplicação web utilizando **Jakarta EE (antigo Java EE)**, **JSF (Jakarta Server Faces)**, **PrimeFaces** para a interface e **JDBC** para a persistência com **MySQL**.
-
-O projeto **não utiliza Spring Boot**, conforme solicitado, e está configurado como um projeto Maven Webapp para ser facilmente importado e executado no Eclipse com um servidor Tomcat.
-
-## 1. Pré-requisitos
-
-Para rodar este projeto, você precisará ter instalado:
-
-1.  **Java Development Kit (JDK) 17** ou superior.
-2.  **MySQL Server** (versão 8.0 recomendada).
-3.  **MySQL Workbench** ou outro cliente SQL.
-4.  **Eclipse IDE** (com suporte a projetos Maven e Web).
-5.  **Apache Tomcat 10.1** (ou superior) configurado no Eclipse.
-
-## 2. Configuração do Banco de Dados MySQL
-
-O projeto espera que exista um banco de dados chamado `smartmarket` e que o usuário de conexão seja `root` com a senha `root`.
-
-**Passo a passo:**
-
-1.  Abra o seu cliente MySQL.
-2.  Execute o script SQL fornecido no arquivo `db_script.sql` para criar o banco de dados, todas as tabelas (`usuario`, `fornecedor`, `produto`, `venda`, `item_venda`, `log_sistema`) e inserir os dados iniciais.
-
-    ```sql
-    -- Exemplo de comandos a serem executados:
-    SOURCE /caminho/para/smartmarket/db_script.sql;
-    ```
-
-3.  **Verifique as credenciais:**
-    *   **Banco de Dados:** `smartmarket`
-    *   **Usuário:** `root`
-    *   **Senha:** `root`
-
-    **IMPORTANTE:** Se suas credenciais do MySQL forem diferentes, você **DEVE** alterar o arquivo `smartmarket/src/main/java/com/smartmarket/util/DBConnection.java` nas linhas 10 e 11:
-
-    ```java
-    private static final String USER = "seu_usuario"; // Altere aqui
-    private static final String PASSWORD = "sua_senha"; // Altere aqui
-    ```
-
-## 3. Configuração e Execução no Eclipse
-
-O projeto utiliza **Maven** para gerenciar as dependências.
-
-**Passo a passo:**
-
-1.  **Importar o Projeto:**
-    *   No Eclipse, vá em `File` -> `Import...`
-    *   Selecione `Maven` -> `Existing Maven Projects`.
-    *   Clique em `Browse...` e selecione a pasta raiz do projeto (`smartmarket`).
-    *   Clique em `Finish`.
-
-2.  **Configurar o Tomcat:**
-    *   Certifique-se de ter o **Apache Tomcat 10.1** (ou superior) configurado no Eclipse (pois o projeto usa Jakarta EE 10).
-    *   Clique com o botão direito no projeto `smartmarket` no Package Explorer.
-    *   Vá em `Properties` -> `Targeted Runtimes` e selecione o seu Tomcat 10.1.
-
-3.  **Executar o Projeto:**
-    *   Clique com o botão direito no projeto `smartmarket`.
-    *   Selecione `Run As` -> `Run on Server`.
-    *   Escolha o seu servidor Tomcat 10.1.
-
-### Acesso ao Sistema
-
-Após o Tomcat iniciar, o sistema estará acessível em: `http://localhost:8080/smartmarket/login.xhtml`
-
-**Credenciais de Teste (Senha: `123` para todos):**
-
-| Perfil | Email |
-| :--- | :--- |
-| **Administrador** | `admin@smart.com` |
-| **Gerente** | `maria@smart.com` |
-| **Caixa** | `joao@smart.com` |
-
-## 4. Funcionalidades Implementadas
-
-| Funcionalidade | Descrição |
-| :--- | :--- |
-| **Login** | Tela de login com autenticação no banco de dados e controle de sessão. |
-| **Dashboard** | Tela inicial que exibe o **Aviso de Estoque Baixo** (tabela vermelha e popup). |
-| **Cadastro de Produtos** | CRUD completo com campos para código, preço, estoque, estoque mínimo e fornecedor. |
-| **Cadastro de Fornecedores** | CRUD simples de fornecedores. |
-| **PDV (Caixa)** | Simulação de Ponto de Venda com adição de produtos por código, cálculo de total e troco. |
-| **Cupom Fiscal** | Geração de um arquivo de texto (`.txt`) simulando o cupom fiscal com os dados da venda. |
-| **Logs** | Tela de Logs de Auditoria (`logs.xhtml`) que registra as ações do sistema. |
+Este projeto é um Sistema de Gestão de Varejo (ERP) desenvolvido com foco em usabilidade e eficiência para pequenos e médios negócios. O SmartMarket permite o gerenciamento completo de vendas, estoque, produtos, fornecedores e usuários, utilizando uma arquitetura robusta baseada em Java.
 
 ---
-*Projeto criado por **Manus AI**.*
+
+## 🚀 Funcionalidades Principais
+
+O sistema cobre os processos essenciais de um ponto de venda e retaguarda:
+
+- **Ponto de Venda (PDV):** Interface otimizada para registro rápido de vendas, com carrinho dinâmico e finalização de compra.  
+- **Gestão de Produtos e Estoque:** Cadastro detalhado de produtos e monitoramento em tempo real dos níveis de estoque.  
+- **Controle de Fornecedores:** Gerenciamento de informações de contato e produtos fornecidos.  
+- **Controle de Usuários e Acesso:** Gerenciamento de usuários com diferentes perfis de acesso (Admin, Funcionário).  
+- **Logs de Sistema:** Registro de atividades importantes no sistema (LogSistema).  
+- **Relatórios:** Geração de relatórios de vendas e cupons fiscais em PDF.  
+- **Dashboard:** Visão geral com indicadores e gráficos de desempenho de vendas.
+
+---
+
+## 🛠 Tecnologias Utilizadas
+
+O projeto segue o padrão MVC (Model-View-Controller) e utiliza o ecossistema Java para o desenvolvimento:
+
+| Categoria     | Tecnologia                 | Descrição                                           |
+|--------------|---------------------------|---------------------------------------------------|
+| Backend       | Java (Jakarta EE)          | Linguagem base e especificações para o servidor  |
+|              | JPA / Hibernate            | Persistência de dados e mapeamento Objeto-Relacional |
+|              | Maven                      | Gerenciamento de dependências e ciclo de vida do projeto |
+|              | jBCrypt                    | Biblioteca para hashing de senhas                |
+| Frontend      | JSF (Jakarta Server Faces) | Framework para construção da interface de usuário |
+|              | PrimeFaces                 | Biblioteca de componentes visuais rica e responsiva |
+| Infraestrutura| MySQL                      | Banco de dados relacional para armazenamento de dados |
+|              | Tomcat                     | Servidor de aplicação web                        |
+                   |
+
+---
+
+## 📸 Galeria do Sistema
+
+Para ilustrar a interface e as principais telas do SmartMarket:
+
+<!-- Tela de Login -->
+<h3>Tela de Login</h3>
+<img src="imagens/login.png" alt="Tela de Login" width="400"/>
+
+<!-- Dashboard: duas imagens lado a lado -->
+<h3>Dashboard</h3>
+<p float="left">
+  <img src="imagens/dashboard1.png" alt="Dashboard 1" width="300"/>
+  <img src="imagens/dashboard2.png" alt="Dashboard 2" width="300"/>
+</p>
+
+<!-- Ponto de Venda -->
+<h3>Ponto de Venda (PDV)</h3>
+<img src="imagens/pdv.png" alt="Ponto de Venda" width="400"/>
+
+<!-- Gestão de Produtos/Estoque -->
+<h3>Gestão de Produtos/Estoque</h3>
+<img src="imagens/produtos.png" alt="Gestão de Produtos" width="400"/>
+
+<!-- Gestão de Fornecedores -->
+<h3>Gestão de Fornecedores</h3>
+<img src="imagens/fornecedores.png" alt="Fornecedores" width="400"/>
+
+<!-- Relatório de Vendas -->
+<h3>Relatório de Vendas</h3>
+<img src="imagens/relatoriovendas.png" alt="Relatório de Vendas" width="400"/>
+
+
+
+---
+
+## ⚙️ Pré-requisitos
+
+Para executar o projeto localmente, você precisará ter instalado:
+
+- Java JDK 17+  
+- Maven 3.6+  
+- MySQL Server 8.0+  
+- Git
+
+---
+
+## 💾 Configuração do Banco de Dados
+
+1. **Crie o Schema:** No seu servidor MySQL, crie um banco de dados chamado `smartmarket` (ou o nome que preferir).  
+2. **Configuração de Conexão:** O projeto utiliza o arquivo `persistence.xml` para a configuração do banco. Ajuste usuário e senha conforme sua instalação local.
+
+---
+
+## 🚀 Como Rodar o Projeto
+
+1. **Clone o repositório:**  <https://github.com/Emmily05/erp-smartmarket.git>
+2. **Compile e Empacote:** mvn clean package
+2. **Deploy:** O arquivo .war gerado em target/ deve ser implantado em um servidor de aplicação compatível com Jakarta EE (como Apache Tomcat).
+
+## 🧪 Observações sobre o MVP
+
+Este projeto é uma **versão MVP (Minimum Viable Product)** do SmartMarket, ou seja, é funcional, mas ainda não possui todas as funcionalidades de cadastro de usuários.  
+
+Para testar o sistema, existem **3 usuários de exemplo** já configurados:
+
+| Usuário       | E-mail           | Senha |
+|---------------|-----------------|-------|
+| Administrador | admin@smart.com  | 123   |
+| Maria Gerente | maria@smart.com  | 123   |
+| João Caixa    | joao@smart.com   | 123   |
+
+
+## 🔒 Melhorias Futuras
+
+**Segurança de Senha Aprimorada:** Implementar Spring Security ou solução moderna de hashing.
+
+**Rastreabilidade e Auditoria:** Expandir logs de segurança e sistema para facilitar auditoria e troubleshooting.
+
+**Controle de Acesso Fino:** Implementar controle de acesso granular baseado em papéis e permissões.

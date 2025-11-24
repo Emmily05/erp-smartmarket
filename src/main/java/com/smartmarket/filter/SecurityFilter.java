@@ -48,7 +48,7 @@ public class SecurityFilter implements Filter {
         String path = uri.substring(contextPath.length());
 
         // Só ADMIN e GERENTE acessam Produtos e Fornecedores
-        if ((path.contains("/produtos.xhtml") || path.contains("/fornecedores.xhtml")) || path.contains("/relatorioVendas.xhtml")&
+        if ((path.contains("/produtos.xhtml") || path.contains("/fornecedores.xhtml"))&
             !(usuario.getPerfil() == Usuario.Perfil.ADMIN || usuario.getPerfil() == Usuario.Perfil.GERENTE)) {
             response.sendRedirect(contextPath + "/dashboard.xhtml");
             return;
