@@ -47,8 +47,8 @@ Para ilustrar a interface e as principais telas do SmartMarket:
 <!-- Dashboard: duas imagens lado a lado -->
 <h3>Dashboard</h3>
 <p float="left">
-  <img src="imagens/dashboard1.png" alt="Dashboard 1" width="400"/>
-  <img src="imagens/dashboard2.png" alt="Dashboard 2" width="400"/>
+  <img src="imagens/dashboard1.png" alt="Dashboard 1" width="600"/>
+  <img src="imagens/dashboard2.png" alt="Dashboard 2" width="600"/>
 </p>
 
 <!-- Ponto de Venda -->
