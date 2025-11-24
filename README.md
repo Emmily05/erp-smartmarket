@@ -32,7 +32,7 @@ O projeto segue o padrão MVC (Model-View-Controller) e utiliza o ecossistema Ja
 |              | PrimeFaces                 | Biblioteca de componentes visuais rica e responsiva |
 | Infraestrutura| MySQL                      | Banco de dados relacional para armazenamento de dados |
 |              | Tomcat                     | Servidor de aplicação web                        |
-                   |
+                   
 
 ---
 
@@ -42,30 +42,30 @@ Para ilustrar a interface e as principais telas do SmartMarket:
 
 <!-- Tela de Login -->
 <h3>Tela de Login</h3>
-<img src="imagens/login.png" alt="Tela de Login" width="400"/>
+<img src="imagens/login.png" alt="Tela de Login" width="600"/>
 
 <!-- Dashboard: duas imagens lado a lado -->
 <h3>Dashboard</h3>
 <p float="left">
-  <img src="imagens/dashboard1.png" alt="Dashboard 1" width="300"/>
-  <img src="imagens/dashboard2.png" alt="Dashboard 2" width="300"/>
+  <img src="imagens/dashboard1.png" alt="Dashboard 1" width="400"/>
+  <img src="imagens/dashboard2.png" alt="Dashboard 2" width="400"/>
 </p>
 
 <!-- Ponto de Venda -->
 <h3>Ponto de Venda (PDV)</h3>
-<img src="imagens/pdv.png" alt="Ponto de Venda" width="400"/>
+<img src="imagens/pdv.png" alt="Ponto de Venda" width="600"/>
 
 <!-- Gestão de Produtos/Estoque -->
 <h3>Gestão de Produtos/Estoque</h3>
-<img src="imagens/produtos.png" alt="Gestão de Produtos" width="400"/>
+<img src="imagens/produtos.png" alt="Gestão de Produtos" width="600"/>
 
 <!-- Gestão de Fornecedores -->
 <h3>Gestão de Fornecedores</h3>
-<img src="imagens/fornecedores.png" alt="Fornecedores" width="400"/>
+<img src="imagens/fornecedores.png" alt="Fornecedores" width="600"/>
 
 <!-- Relatório de Vendas -->
 <h3>Relatório de Vendas</h3>
-<img src="imagens/relatoriovendas.png" alt="Relatório de Vendas" width="400"/>
+<img src="imagens/relatoriovendas.png" alt="Relatório de Vendas" width="600"/>
 
 
 
